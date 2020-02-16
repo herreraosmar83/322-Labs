@@ -10,10 +10,8 @@ void output();
 int format();
 // bool format();
 char *or[];
-char as[];
-int dec[];
-char parity[1][1];
-char er[1][1];
+char *parity[];
+char *er[];
 //main to take in values from command line
 int main(int args,char *argv[]){
     char buffer[1024];
@@ -26,35 +24,39 @@ int main(int args,char *argv[]){
     }
     //read in file
     if(formatV == 2){
+        int opener;
+        int rd;
+        char *bp[];
         ///read file and input each into string
         printf("file detected");
-    //     int op = open(argv[1], O_RDWR);
-    //     read(op, buffer, sizeof(buffer));
-    // // printf("reader\n");
-    // //     printf(reader);
-    //     close(0);
+        opener = open(argv[1], O_RDONLY);
+        printf ("Printing %s\n",argv[1]);
+        bp = read(opener, buffer, sizeof(buffer));
+        printf(bp[0]);
+    // printf("reader\n");
+    //     printf(reader);
+        close(0);
 
     }
     
     //filter txt file or stdin to accomadate reequirements
+        //attempt to check each length of index to add zeroes at the end
+        printf(argv[1]);
+        //char ts[] = argv[1];
+        //printf(ts);  
+        // while(sizeof(argv[i]!=7)){
+        
+        // }
+        //if beginning of each index has a zero then ignore or convert to 0
 
-
-
-    // do conversions to ascii and other values
 
     //place values of each byte into rightful index of global values
-    printf("test of values \n ");
-    printf(argv[0]);
-    printf("\n");
-    printf(argv[1]);
-    for(int i=1;i<=args;i++){
+
+    printf("\n ==============================");
+    for(int i=1;i<=args;i++ ){
         or[i] = argv[i];
     }
     //call print function
-     printf("test of values \n ");
-    printf(or[1]);
-    printf("\n");
-    printf(or[2]);
     printf("\n number of args %d \n",args);
 
     output(args); 
@@ -68,18 +70,16 @@ int main(int args,char *argv[]){
 void output(int args){
 
 //Original ASCII Decimal Parity T.Error
-// or[0] = 123;
-// as[0] = 321;
-// dec[0] = 95;
-// parity[0][0] = "evem";
-// er[0][0] = "FALSE";
-//     printf("\n Original   ASCII   Decimal   Parity   T.Error \n ");
-//     printf("---------   -----   -------   ------   ------- \n");
-//     printf(" %d         %d      %d        %s     %s",or[0],as[0],dec[0],parity[0][0],er[0][0]);
+
     printf("\n Original   ASCII   Decimal   Parity   T.Error \n ");
     printf("---------   -----   -------   ------   ------- \n");
-    for(int i=1;i<args;i++){    
-        printf(" %s         test      test        test     test \n",or[i]);
+    for(int i=1;i<args;i++){
+        //if one's in index add up to odd 
+        char *val = "true";
+        char *ex = "odd";
+        char *data = or[i];
+        char c = strtol(data, 0, 2);   
+        printf(" %s         %c      %d        %s     %s \n",data,c,c,val,ex);
     }
 }
 
@@ -91,6 +91,7 @@ int format(int args){
     }
     //assumes input will be in file format
     if(args == 2){
+        printf("file foprmat");
         return 2;
     }
     //input from command line
