@@ -3,27 +3,18 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <time.h>
-#include <sys/types.h>
-int forker();
-int main(){
+#include <sys/wait.h>
+int forky();
+int timer();
+int main(void){
     // time in seconds passed since 1970<- i dont know why
-    time_t seconds; 
-    seconds = time(NULL); 
-    printf("Start: %ld", seconds);
-
-
+    timer(0);
 //create child process here
-    forker();
-
+    forky();
     //print out the process id of parent
-
     //print out the process id of child 
-    printf(" \nPPID: %d", (int)getpid());
-    printf(", PID: some value");
-
-    printf("\nPPID: some value");
-    printf(", PID: some value");
-    printf(", CPID: some value");
+    //printf("\n\nnefunrefnrenf rePPID: %d", (int)getpid());
+    
     printf(", RETVAL: some value");
 
     printf("\nUSER: some value");
@@ -32,11 +23,11 @@ int main(){
     printf("\nCUSER: some value");
     printf(", CSYS: some value");
 
-    printf("\nSTOP: some value"); 
+    timer(1);
     return(0); 
 }
-int forker(){
-
+int forky(){
+    int status;
     pid_t pid = fork();
 
     if(pid<0){
@@ -44,29 +35,39 @@ int forker(){
     }
     else if(pid==0){
         //this is the child process
-
-        //pid 
-        printf("child pid: %d",getpid());
+         //pid 
+        printf("\nPID: %d",(int)getpid());
         //ppid (parent id)
-        printf("\n parent ppid: %d",getppid());
+        printf(" PPID: %d\n",(int)getppid());
         sleep(2);
         exit(EXIT_SUCCESS);
     }
     else{
         //this is the parent process
-
+        waitpid(pid,&status,0);
         //process id 
-        printf("\n parent PID: %d",getpid());
+        printf("PID: %d",(int)getpid());
         //the process id of parent to parent
-        printf("\nparent PPID: %d", getppid());
+        printf(" PPID: %d ", (int)getppid());
         //the process id of child (which should be the same as pid of child pid above for case 2)
-        printf("\nChild CPID: %d",pid);
-        wait(NULL);
+        printf("CPID: %d \n",pid);
 
     }
     return (0);
 }
-
+int timer(int val){
+    if(val==0){
+        time_t seconds; 
+        seconds = time(NULL); 
+        printf("\nSTART: %ld", seconds);
+    }
+    else{
+        time_t seconds; 
+        seconds = time(NULL); 
+        printf("\nSTOP: %ld", seconds);
+    }
+    return (0);
+}
 
 
 

@@ -1,8 +1,8 @@
 #Make file for make baby and me
 all:
-	gcc -c main.c -Wall -Wextra
+	gcc main.c -c -Wall -Wextra
 	gcc -o time-4-baby-and-me main.c 
 #run to clean directory
 cleanAll:
-	rm time-4-baby-and-me.exe
+	rm time-4-baby-and-me
 	rm main.o
