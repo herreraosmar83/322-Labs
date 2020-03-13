@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
-
+#include <sys/wait.h>
 int forky();
 int main(int args,char *command[]){
     printf("\nForking to creat a child process:  \n");
@@ -19,17 +19,26 @@ int forky(char *command[]){
     //this is the child process
     else if(pid==0){
         //pid 
-     printf("\n child process: \n");
+        printf("\n child process: \n");
         // ● The child process executes the supplied command (see execve(2))
         // ○ the child needs to prepare the new argv structure
         //take arguemements and execute the supplied arguemmnnts
-        char *args[] = {command[1]};
-        execvp(command[0],args);
+        char *args[] = {command[1],NULL};
+        printf("\n--------\n");
+        execve(args[0],args,NULL);
+        sleep(1);
+        exit(EXIT_SUCCESS);
     }//parent process
     else{
         // ● The parent process prints the PID of the child on stderr
+        printf("\nI am the parent\n");
         fprintf(stderr, "PID of Child: %d",pid); // Error message on stderr (using fprintf)
         waitpid(pid,&status,0);
+        if (WIFEXITED(status)){
+            int returned = WEXITSTATUS(status);
+            fprintf(stderr,"\nReturn value of Child: %d\n",returned );      
+        }
+        sleep(1);
 
     }
     
@@ -37,14 +46,6 @@ int forky(char *command[]){
     //prints out arguemnt 1
     return (0);
 }
-
-
-
-
-
-
-
-
 
 
 // In this software project, you are to write a command-line tool that launches another process and
