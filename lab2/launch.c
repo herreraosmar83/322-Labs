@@ -6,10 +6,10 @@
 int forky();
 int main(int args,char *command[]){
     printf("\nForking to creat a child process:  \n");
-    forky(command);
+    forky(args,command);
     return (0);
 }
-int forky(char *command[]){
+int forky(int args,char *command[]){
     int status;
     pid_t pid = fork();
     //fork tipically returns 1 or zero for parent or child process and -1 for an error.
@@ -23,16 +23,28 @@ int forky(char *command[]){
         // ● The child process executes the supplied command (see execve(2))
         // ○ the child needs to prepare the new argv structure
         //take arguemements and execute the supplied arguemmnnts
-        char *args[] = {command[1],NULL};
-        printf("\n--------\n");
-        execve(args[0],args,NULL);
+        
+        // assume more than one arguement is passed 
+        if(args>1){
+            char *argsV[args];
+            for(int i=1;i<args;i++){
+                int val = i-1;
+                printf("%d",val);
+                argsV[val] = command[i];
+                printf("\n--------\n");
+                execve(argsV[val],argsV,NULL);
+            }
+
+            printf(argsV[0]);
+
+        }
         sleep(1);
         exit(EXIT_SUCCESS);
     }//parent process
     else{
         // ● The parent process prints the PID of the child on stderr
         printf("\nI am the parent\n");
-        fprintf(stderr, "PID of Child: %d",pid); // Error message on stderr (using fprintf)
+        fprintf(stderr, "PID of Child: %d\n",pid); // Error message on stderr (using fprintf)
         waitpid(pid,&status,0);
         if (WIFEXITED(status)){
             int returned = WEXITSTATUS(status);
