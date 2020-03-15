@@ -3,6 +3,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <string.h>
+#include <stdlib.h>
 int forky();
 int main(int args,char *command[]){
     printf("\nForking to creat a child process:  \n");
@@ -19,42 +21,39 @@ int forky(int args,char *command[]){
     //this is the child process
     else if(pid==0){
         //pid 
-        printf("\n child process: \n");
+        printf("\nchild process: \n");
         // ● The child process executes the supplied command (see execve(2))
         // ○ the child needs to prepare the new argv structure
         //take arguemements and execute the supplied arguemmnnts
-        
-        // assume more than one arguement is passed 
-        if(args>1){
-            char *argsV[args];
-            for(int i=1;i<args;i++){
-                int val = i-1;
-                printf("%d",val);
-                argsV[val] = command[i];
-                printf("\n--------\n");
-                execve(argsV[val],argsV,NULL);
-            }
 
-            printf(argsV[0]);
+        //concatenate all values of command line args
+        int i;
+        int v = 0;
+        int size = args - 1;
 
+        char *values = (char *)malloc(v);
+        for(i = 1; i <= size; i++){
+            values = (char *)realloc(values, (v + strlen(command[i])));
+            strcat(values, command[i]);
+            // strcat(values, " ");
         }
+        printf("\nExecuting commands %s\n", values);
+        char *arguements[] = {command[1],NULL};
+        execve(values,arguements,NULL);
         sleep(1);
         exit(EXIT_SUCCESS);
     }//parent process
     else{
         // ● The parent process prints the PID of the child on stderr
-        printf("\nI am the parent\n");
-        fprintf(stderr, "PID of Child: %d\n",pid); // Error message on stderr (using fprintf)
         waitpid(pid,&status,0);
+        printf("\nI am the parent\n");
+        fprintf(stderr, "PID of Child: %d \n",pid); // Error message on stderr (using fprintf)
         if (WIFEXITED(status)){
             int returned = WEXITSTATUS(status);
-            fprintf(stderr,"\nReturn value of Child: %d\n",returned );      
+            fprintf(stderr,"Return value of Child: %d\n",returned );      
         }
         sleep(1);
-
     }
-    
-    
     //prints out arguemnt 1
     return (0);
 }
