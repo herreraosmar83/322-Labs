@@ -7,3 +7,6 @@ since they were done in previos projects and experiance.
 I didn't reallt undertand what or how to use the bash script.
 
 completed just feels inconsistant at times..made a workaround to kill
+
+to execute d: $./dining-p (phil number)
+or: $./dining-p kill -TERM (pid)
