@@ -1,0 +1,9 @@
+Writing this program will require using the appropriate data type to store 32 bits. We encourage
+you to use unsigned data types as well.
+
+doesn't seem hard
+
+to  run program run make commands:
+make all or make clean to run project 
+
+$./paging (number)
