@@ -7,12 +7,6 @@
 #include <signal.h>
 #include <sys/stat.h>
 #include <sys/resource.h>
-pid_t mole;
-
-
-void term_signal_handler(int signum);
-void usr_signal_handler(int signum);
-
 int main()
 {
     // set a clear file creation mask to 0
@@ -26,12 +20,17 @@ int main()
     pid_t sid = setsid();
 
     //change dirtectory 
-     printf("%s\n", getcwd(s, 100));///gives current dir
-     chdir("/");
+    printf("%s\n", getcwd(s, 100));///gives current dir
+    chdir("/");
+    //close all unneeded file descriptors getrlimit(2)
+
+
+    //reopen the standard file descriptors to map to /dev/null dup(2)
 
 
 
-}
+
+}//when the program is running, it will respond to external stimuli 
 
 
 // part one:
