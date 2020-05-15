@@ -7,30 +7,88 @@
 #include <signal.h>
 #include <sys/stat.h>
 #include <sys/resource.h>
-int main()
+
+pid_t child;
+pid_t mole1;
+pid_t mole2;
+
+void myHandle(int signum){
+    signal(signum,myHandle);
+    int moleSelector;
+    char process[5];
+    //case1 SIG_TERM    kill all prcess and shut down 
+    if(signum == SIGTERM){
+		kill(child, SIGTERM);
+		exit(0);
+	}
+
+    //case2 SIG_USR1,  kill process 1 mole1 randoimly creat ,mole 1 or 2
+    if(signum == SIGUSR1){
+        //kill mole1
+
+		kill(mole1, SIGTERM);
+		
+		moleSelector = (rand() % 2) + 1;
+		sprintf(process, "%d", moleSelector);
+		char* argv[] = {"moles ", process};
+		if(moleSelector ==1){
+            mole1 = fork();
+            char *argv[0] = {"MoleOne", NULL};
+        }
+		
+		
+
+			execv(argv[0], argv);
+		
+    }
+    //case3 SIG_USR2  kill process1 mole2
+    if(signum == SIGUSR2){
+        kill(mole2,SIGTERM);
+
+    }
+}
+int main(int args,char *argv[])
 {
+    struct rlimit limit;
+    int fileDes;
     // set a clear file creation mask to 0
     umask(0);
     pid_t pid = fork();
     //CREATE fork process and check for parent proecess.. exit
     if (pid == 1){ //parent ptocess is one
-        exit(EXIT_SUCCESS);
+        exit(EXIT_SUCCESS);     
     }
-    //create a new sessioin  process group 
-    pid_t sid = setsid();
+    else{
+        //create a new sessioin  process group 
+        pid_t sid = setsid();
+        child = pid;
+        //change dirtectory 
+        // printf("%s\n", getcwd(s, 100));///gives current dir
+        chdir("/");
+        //close all unneeded file descriptors getrlimit(2)
+        getrlimit(RLIMIT_NOFILE,&limit);
+        int upper = limit.rlim_cur;
+        for (int i=0; i<upper; i++){
+            close(i);
+        }
+        fileDes = open("/dev/null", O_RDWR);
+        dup(fileDes);
+        dup(fileDes);
+        signal(SIGTERM, myHandle);
+	    signal(SIGUSR1, myHandle);
+	    signal(SIGUSR2, myHandle);
+        //reopen the standard file descriptors to map to /dev/null dup(2)
 
-    //change dirtectory 
-    printf("%s\n", getcwd(s, 100));///gives current dir
-    chdir("/");
-    //close all unneeded file descriptors getrlimit(2)
-
-
-    //reopen the standard file descriptors to map to /dev/null dup(2)
-
-
-
+        while(1){
+                pause();
+            }
+        }
+        kill(mole1, SIGTERM);
+    	kill(mole2, SIGTERM);
+    	exit(0);
 
 }//when the program is running, it will respond to external stimuli 
+
 
 
 // part one:
